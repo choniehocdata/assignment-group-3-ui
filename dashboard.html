@@ -1,452 +1,764 @@
 <!DOCTYPE html>
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Customer Prediction Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#0A2540",
-                        "secondary": "#102A43",
-                        "accent": "#2EC4B6",
-                        "success": "#2ECC71",
-                        "risk": "#E74C3C",
-                        "background-light": "#F8FAFC",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"],
-                        "body": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.375rem",
-                        "xl": "1rem",
-                        "2xl": "1.5rem"
-                    },
-                    boxShadow: {
-                        "soft": "0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)",
-                        "card": "0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)"
-                    }
-                },
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Customer Prediction Dashboard</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0A2540",
+              secondary: "#102A43",
+              accent: "#2EC4B6",
+              success: "#2ECC71",
+              risk: "#E74C3C",
+              "background-light": "#F8FAFC",
             },
-        }
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.375rem",
+              xl: "1rem",
+              "2xl": "1.5rem",
+            },
+            boxShadow: {
+              soft:
+                "0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)",
+              card: "0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)",
+            },
+          },
+        },
+      };
     </script>
-<style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F8FAFC;
-        }
-        .form-select, .form-input {
-            transition: all 0.2s;
-        }
-        .form-select:focus, .form-input:focus {
-            box-shadow: 0 0 0 2px rgba(46, 196, 182, 0.2);
-        }
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+      }
+      .form-select,
+      .form-input {
+        transition: all 0.2s;
+      }
+      .form-select:focus,
+      .form-input:focus {
+        box-shadow: 0 0 0 2px rgba(46, 196, 182, 0.2);
+      }
     </style>
-</head>
-<body class="bg-background-light text-slate-800 font-body min-h-screen flex flex-col">
-<header class="sticky top-0 z-50 bg-white border-b border-slate-200/60 shadow-sm backdrop-blur-md bg-white/90">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div class="flex justify-between items-center h-16">
-<div class="flex items-center gap-4">
-<div class="size-9 rounded-lg bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-[20px]">account_balance</span>
-</div>
-<div class="flex flex-col">
-<h1 class="text-primary font-bold text-lg leading-tight tracking-tight">Bank Term Deposit Prediction</h1>
-<span class="text-xs text-slate-500 font-medium tracking-wide uppercase">AI-powered Telemarketing Decision Support</span>
-</div>
-</div>
-<div class="flex items-center gap-6">
-<div class="hidden md:flex items-center gap-3 pr-6 border-r border-slate-200">
-<div class="text-right">
-<p class="text-sm font-semibold text-primary">Marketing Officer</p>
-<p class="text-xs text-slate-500">Global Banking Division</p>
-</div>
-<div class="size-9 rounded-full bg-slate-100 flex items-center justify-center text-primary font-bold text-xs ring-2 ring-white ring-offset-2 ring-offset-slate-50">
-                        MO
+  </head>
+
+  <body class="bg-background-light text-slate-800 font-body min-h-screen flex flex-col">
+    <header
+      class="sticky top-0 z-50 bg-white border-b border-slate-200/60 shadow-sm backdrop-blur-md bg-white/90"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center gap-4">
+            <div
+              class="size-9 rounded-lg bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20"
+            >
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            </div>
+            <div class="flex flex-col">
+              <h1 class="text-primary font-bold text-lg leading-tight tracking-tight">
+                Bank Term Deposit Prediction
+              </h1>
+              <span class="text-xs text-slate-500 font-medium tracking-wide uppercase"
+                >AI-powered Telemarketing Decision Support</span
+              >
+            </div>
+          </div>
+
+          <div class="flex items-center gap-6">
+            <div class="hidden md:flex items-center gap-3 pr-6 border-r border-slate-200">
+              <div class="text-right">
+                <p class="text-sm font-semibold text-primary">Marketing Officer</p>
+                <p class="text-xs text-slate-500">Global Banking Division</p>
+              </div>
+              <div
+                class="size-9 rounded-full bg-slate-100 flex items-center justify-center text-primary font-bold text-xs ring-2 ring-white ring-offset-2 ring-offset-slate-50"
+              >
+                MO
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <!-- View History -->
+              <button
+                type="button"
+                onclick="window.location.href='history.html'"
+                class="p-2 text-slate-400 hover:text-primary transition-colors rounded-full hover:bg-slate-50"
+                title="View Prediction History"
+              >
+                <span class="material-symbols-outlined text-[22px]">history</span>
+              </button>
+
+              <button
+                type="button"
+                class="p-2 text-slate-400 hover:text-primary transition-colors rounded-full hover:bg-slate-50"
+                title="Help"
+              >
+                <span class="material-symbols-outlined text-[22px]">help</span>
+              </button>
+              <button
+                type="button"
+                class="p-2 text-slate-400 hover:text-primary transition-colors rounded-full hover:bg-slate-50"
+                title="Settings"
+              >
+                <span class="material-symbols-outlined text-[22px]">settings</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-8 space-y-6">
+          <form id="predictionForm">
+            <!-- Customer Profile -->
+            <div class="bg-white rounded-xl shadow-card p-6 border border-slate-100">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                <div class="p-2 bg-blue-50 text-primary rounded-lg">
+                  <span class="material-symbols-outlined text-[20px]">person_outline</span>
+                </div>
+                <h3 class="text-lg font-bold text-primary">Customer Profile</h3>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="group relative">
+                  <label
+                    class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1"
+                  >
+                    Age
+                    <span
+                      class="material-symbols-outlined text-[14px] text-slate-400 cursor-help"
+                      title="Customer's age"
+                      >info</span
+                    >
+                  </label>
+                  <div class="relative">
+                    <span
+                      class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-[20px]"
+                      >calendar_today</span
+                    >
+                    <input
+                      id="age"
+                      class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0 placeholder-slate-400"
+                      placeholder="e.g. 34"
+                      type="number"
+                      min="18"
+                      value="30"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1"
+                  >
+                    Job
+                    <span
+                      class="material-symbols-outlined text-[14px] text-slate-400 cursor-help"
+                      title="Type of job"
+                      >info</span
+                    >
+                  </label>
+                  <div class="relative">
+                    <span
+                      class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-[20px]"
+                      >work_outline</span
+                    >
+                    <select
+                      id="job"
+                      class="form-select w-full pl-10 pr-8 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      required
+                    >
+                      <option value="">Select job type</option>
+                      <option value="unemployed">Unemployed</option>
+                      <option value="services">Services</option>
+                      <option value="management">Management</option>
+                      <option value="blue-collar">Blue-collar</option>
+                      <option value="self-employed">Self-employed</option>
+                      <option value="technician">Technician</option>
+                      <option value="entrepreneur">Entrepreneur</option>
+                      <option value="admin">Admin</option>
+                      <option value="student">Student</option>
+                      <option value="housemaid">Housemaid</option>
+                      <option value="retired">Retired</option>
+                      <option value="unknown">Unknown</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1"
+                  >
+                    Marital Status
+                    <span
+                      class="material-symbols-outlined text-[14px] text-slate-400 cursor-help"
+                      title="Marital status"
+                      >info</span
+                    >
+                  </label>
+                  <div class="relative">
+                    <span
+                      class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-[20px]"
+                      >diversity_3</span
+                    >
+                    <select
+                      id="marital"
+                      class="form-select w-full pl-10 pr-8 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      required
+                    >
+                      <option value="">Select status</option>
+                      <option value="married">Married</option>
+                      <option value="single">Single</option>
+                      <option value="divorced">Divorced</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1"
+                  >
+                    Education
+                    <span
+                      class="material-symbols-outlined text-[14px] text-slate-400 cursor-help"
+                      title="Education Level"
+                      >info</span
+                    >
+                  </label>
+                  <div class="relative">
+                    <span
+                      class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-[20px]"
+                      >school</span
+                    >
+                    <select
+                      id="education"
+                      class="form-select w-full pl-10 pr-8 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      required
+                    >
+                      <option value="">Select education</option>
+                      <option value="primary">Primary</option>
+                      <option value="secondary">Secondary</option>
+                      <option value="tertiary">Tertiary</option>
+                      <option value="unknown">Unknown</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Financial & Credit Status -->
+            <div class="bg-white rounded-xl shadow-card p-6 border border-slate-100 relative overflow-hidden">
+              <div class="absolute top-0 right-0 p-4">
+                <span
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 text-xs font-bold border border-amber-100"
+                >
+                  <span class="material-symbols-outlined text-[14px]">warning</span>
+                  Risk Check Required
+                </span>
+              </div>
+
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                <div class="p-2 bg-blue-50 text-primary rounded-lg">
+                  <span class="material-symbols-outlined text-[20px]">savings</span>
+                </div>
+                <h3 class="text-lg font-bold text-primary">Financial &amp; Credit Status</h3>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                    >Account Balance (Yearly Avg)</label
+                  >
+                  <div class="relative">
+                    <span class="absolute left-3 top-2.5 text-slate-400 font-serif font-bold">€</span>
+                    <input
+                      id="balance"
+                      class="form-input w-full pl-8 pr-4 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0 placeholder-slate-400 font-mono"
+                      placeholder="0.00"
+                      type="number"
+                      value="1000"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-4">
+                  <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                    <span class="text-sm font-medium text-slate-700">Credit Default?</span>
+                    <div class="flex items-center gap-2">
+                      <label class="inline-flex items-center cursor-pointer">
+                        <input
+                          id="defaultYes"
+                          class="form-radio text-primary focus:ring-accent border-slate-300"
+                          name="default"
+                          type="radio"
+                          value="yes"
+                        />
+                        <span class="ml-2 text-sm text-slate-600">Yes</span>
+                      </label>
+                      <label class="inline-flex items-center cursor-pointer ml-3">
+                        <input
+                          id="defaultNo"
+                          class="form-radio text-primary focus:ring-accent border-slate-300"
+                          name="default"
+                          type="radio"
+                          value="no"
+                          checked
+                        />
+                        <span class="ml-2 text-sm text-slate-600">No</span>
+                      </label>
                     </div>
-</div>
-<div class="flex items-center gap-2">
-<button class="p-2 text-slate-400 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
-<span class="material-symbols-outlined text-[22px]">history</span>
-</button>
-<button class="p-2 text-slate-400 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
-<span class="material-symbols-outlined text-[22px]">help</span>
-</button>
-<button class="p-2 text-slate-400 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
-<span class="material-symbols-outlined text-[22px]">settings</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-</header>
-<main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-<div class="lg:col-span-8 space-y-6">
-<form id="predictionForm">
-<div class="bg-white rounded-xl shadow-card p-6 border border-slate-100">
-<div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-<div class="p-2 bg-blue-50 text-primary rounded-lg">
-<span class="material-symbols-outlined text-[20px]">person_outline</span>
-</div>
-<h3 class="text-lg font-bold text-primary">Customer Profile</h3>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div class="group relative">
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-                            Age
-                            <span class="material-symbols-outlined text-[14px] text-slate-400 cursor-help" title="Customer's age">info</span>
-</label>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-[20px]">calendar_today</span>
-<input id="age" class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0 placeholder-slate-400" placeholder="e.g. 34" type="number" min="18" value="30" required/>
-</div>
-</div>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-                            Job
-                            <span class="material-symbols-outlined text-[14px] text-slate-400 cursor-help" title="Type of job">info</span>
-</label>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-[20px]">work_outline</span>
-<select id="job" class="form-select w-full pl-10 pr-8 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" required>
-<option value="">Select job type</option>
-<option value="unemployed">Unemployed</option>
-<option value="services">Services</option>
-<option value="management">Management</option>
-<option value="blue-collar">Blue-collar</option>
-<option value="self-employed">Self-employed</option>
-<option value="technician">Technician</option>
-<option value="entrepreneur">Entrepreneur</option>
-<option value="admin">Admin</option>
-<option value="student">Student</option>
-<option value="housemaid">Housemaid</option>
-<option value="retired">Retired</option>
-<option value="unknown">Unknown</option>
-</select>
-</div>
-</div>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-                            Marital Status
-                            <span class="material-symbols-outlined text-[14px] text-slate-400 cursor-help" title="Marital status">info</span>
-</label>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-[20px]">diversity_3</span>
-<select id="marital" class="form-select w-full pl-10 pr-8 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" required>
-<option value="">Select status</option>
-<option value="married">Married</option>
-<option value="single">Single</option>
-<option value="divorced">Divorced</option>
-</select>
-</div>
-</div>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-                            Education
-                            <span class="material-symbols-outlined text-[14px] text-slate-400 cursor-help" title="Education Level">info</span>
-</label>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-[20px]">school</span>
-<select id="education" class="form-select w-full pl-10 pr-8 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" required>
-<option value="">Select education</option>
-<option value="primary">Primary</option>
-<option value="secondary">Secondary</option>
-<option value="tertiary">Tertiary</option>
-<option value="unknown">Unknown</option>
-</select>
-</div>
-</div>
-</div>
-</div>
-<div class="bg-white rounded-xl shadow-card p-6 border border-slate-100 relative overflow-hidden">
-<div class="absolute top-0 right-0 p-4">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 text-xs font-bold border border-amber-100">
-<span class="material-symbols-outlined text-[14px]">warning</span>
-                        Risk Check Required
-                    </span>
-</div>
-<div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-<div class="p-2 bg-blue-50 text-primary rounded-lg">
-<span class="material-symbols-outlined text-[20px]">savings</span>
-</div>
-<h3 class="text-lg font-bold text-primary">Financial &amp; Credit Status</h3>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div class="md:col-span-2">
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Account Balance (Yearly Avg)</label>
-<div class="relative">
-<span class="absolute left-3 top-2.5 text-slate-400 font-serif font-bold">€</span>
-<input id="balance" class="form-input w-full pl-8 pr-4 py-2.5 rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0 placeholder-slate-400 font-mono" placeholder="0.00" type="number" value="1000"/>
-</div>
-</div>
-<div class="space-y-4">
-<div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50/50">
-<span class="text-sm font-medium text-slate-700">Credit Default?</span>
-<div class="flex items-center gap-2">
-<label class="inline-flex items-center cursor-pointer">
-<input id="defaultYes" class="form-radio text-primary focus:ring-accent border-slate-300" name="default" type="radio" value="yes"/>
-<span class="ml-2 text-sm text-slate-600">Yes</span>
-</label>
-<label class="inline-flex items-center cursor-pointer ml-3">
-<input id="defaultNo" class="form-radio text-primary focus:ring-accent border-slate-300" name="default" type="radio" value="no" checked/>
-<span class="ml-2 text-sm text-slate-600">No</span>
-</label>
-</div>
-</div>
-</div>
-<div class="space-y-4">
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-<div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50/50">
-<span class="text-sm font-medium text-slate-700">Housing Loan?</span>
-<div class="flex items-center gap-2">
-<label class="inline-flex items-center cursor-pointer">
-<input id="housingYes" class="form-radio text-primary focus:ring-accent border-slate-300" name="housing" type="radio" value="yes" checked/>
-<span class="ml-2 text-sm text-slate-600">Yes</span>
-</label>
-<label class="inline-flex items-center cursor-pointer ml-3">
-<input id="housingNo" class="form-radio text-primary focus:ring-accent border-slate-300" name="housing" type="radio" value="no"/>
-<span class="ml-2 text-sm text-slate-600">No</span>
-</label>
-</div>
-</div>
-<div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50/50">
-<span class="text-sm font-medium text-slate-700">Personal Loan?</span>
-<div class="flex items-center gap-2">
-<label class="inline-flex items-center cursor-pointer">
-<input id="loanYes" class="form-radio text-primary focus:ring-accent border-slate-300" name="loan" type="radio" value="yes"/>
-<span class="ml-2 text-sm text-slate-600">Yes</span>
-</label>
-<label class="inline-flex items-center cursor-pointer ml-3">
-<input id="loanNo" class="form-radio text-primary focus:ring-accent border-slate-300" name="loan" type="radio" value="no" checked/>
-<span class="ml-2 text-sm text-slate-600">No</span>
-</label>
-</div>
-</div>
-</div>
-</div>
-<div class="bg-white rounded-xl shadow-card p-6 border border-slate-100">
-<div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-<div class="p-2 bg-blue-50 text-primary rounded-lg">
-<span class="material-symbols-outlined text-[20px]">campaign</span>
-</div>
-<h3 class="text-lg font-bold text-primary">Marketing Campaign Data</h3>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="space-y-5">
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Contact Type</label>
-<select id="contact" class="form-select w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" required>
-<option value="cellular">Cellular</option>
-<option value="telephone">Telephone</option>
-<option value="unknown">Unknown</option>
-</select>
-</div>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Last Contact Duration (sec)</label>
-<input id="duration" class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" placeholder="0" type="number" value="100" min="0"/>
-</div>
-</div>
-<div class="space-y-5">
-<div class="flex gap-2">
-<div class="w-1/2">
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Month</label>
-<select id="month" class="form-select w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" required>
-<option value="jan">Jan</option>
-<option value="feb">Feb</option>
-<option value="mar">Mar</option>
-<option value="apr">Apr</option>
-<option value="may">May</option>
-<option value="jun">Jun</option>
-<option value="jul">Jul</option>
-<option value="aug">Aug</option>
-<option value="sep">Sep</option>
-<option value="oct">Oct</option>
-<option value="nov">Nov</option>
-<option value="dec">Dec</option>
-</select>
-</div>
-<div class="w-1/2">
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Day</label>
-<input id="day" class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" placeholder="1-31" type="number" value="15" min="1" max="31" required/>
-</div>
-</div>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Number of Contacts</label>
-<input id="campaign" class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" placeholder="Current campaign" type="number" value="1" min="1" required/>
-</div>
-</div>
-<div class="space-y-5">
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Days Passed</label>
-<input id="pdays" class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" placeholder="-1 if never" type="number" value="-1"/>
-</div>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Prev. Outcome</label>
-<select id="poutcome" class="form-select w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" required>
-<option value="unknown">Unknown</option>
-<option value="failure">Failure</option>
-<option value="success">Success</option>
-<option value="other">Other</option>
-</select>
-</div>
-<div>
-<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Previous Contacts</label>
-<input id="previous" class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0" placeholder="0" type="number" value="0" min="0" required/>
-</div>
-</div>
-</div>
-</div>
-<div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-4">
-<div class="flex gap-3 w-full md:w-auto">
-<button type="reset" class="flex-1 md:flex-none px-4 py-2.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        Reset Form
-                    </button>
-<button type="button" class="flex-1 md:flex-none px-4 py-2.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        Load Sample
-                    </button>
-</div>
-<div class="flex gap-3 w-full md:w-auto">
-<button type="button" class="flex-1 md:flex-none px-4 py-2.5 rounded-lg border border-primary text-primary text-sm font-medium hover:bg-slate-50 transition-colors">
-                        Save Prediction
-                    </button>
-<button type="submit" class="flex-1 md:flex-none bg-primary hover:bg-secondary text-white px-8 py-2.5 rounded-lg shadow-lg shadow-primary/25 text-sm font-semibold transition-all transform active:scale-95 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-[18px]">psychology</span>
-                        Predict Deposit Subscription
-                    </button>
-</div>
-</div>
-</form>
-</div>
-<div class="lg:col-span-4 space-y-6">
-<div id="resultPanel" class="bg-white rounded-xl shadow-card border border-slate-100 overflow-hidden h-full flex flex-col hidden">
-<div class="p-6 bg-gradient-to-br from-primary to-secondary text-center relative overflow-hidden">
-<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 20px 20px;"></div>
-<h2 class="text-white text-lg font-semibold relative z-10 mb-6">Prediction Result</h2>
-<div class="mx-auto size-24 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm mb-4 border border-white/20 relative z-10">
-<span id="resultIcon" class="material-symbols-outlined text-accent text-[48px]">check_circle</span>
-</div>
-<div class="relative z-10">
-<p id="resultStatus" class="text-accent font-bold text-sm tracking-widest uppercase mb-1">High Probability</p>
-<h3 id="resultTitle" class="text-3xl font-bold text-white mb-2">Likely to Subscribe</h3>
-<p id="resultDesc" class="text-blue-200 text-sm px-4">Based on current financial and demographic patterns.</p>
-</div>
-</div>
-<div class="p-6 flex-1 flex flex-col justify-center">
-<div class="flex items-end justify-between mb-2">
-<span class="text-sm font-medium text-slate-500">Confidence Score</span>
-<span id="confidenceScore" class="text-2xl font-bold text-primary">85%</span>
-</div>
-<div class="w-full bg-slate-100 rounded-full h-2.5 mb-6 overflow-hidden">
-<div id="confidenceBar" class="bg-accent h-2.5 rounded-full" style="width: 85%"></div>
-</div>
-<div id="reasonsList" class="space-y-4">
-<div class="flex items-start gap-3">
-<span class="material-symbols-outlined text-success text-[20px] mt-0.5">trending_up</span>
-<div>
-<p class="text-sm font-medium text-slate-800">Strong Financial Health</p>
-<p class="text-xs text-slate-500 mt-0.5">High yearly balance indicates potential for investment.</p>
-</div>
-</div>
-<div class="flex items-start gap-3">
-<span class="material-symbols-outlined text-success text-[20px] mt-0.5">history</span>
-<div>
-<p class="text-sm font-medium text-slate-800">Positive History</p>
-<p class="text-xs text-slate-500 mt-0.5">Previous campaign success increases likelihood.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="recommendationPanel" class="bg-indigo-50 rounded-xl p-6 border border-indigo-100 shadow-sm">
-<div class="flex items-center gap-2 mb-3">
-<span class="material-symbols-outlined text-indigo-600">lightbulb</span>
-<h4 class="font-bold text-indigo-900 text-sm uppercase tracking-wide">AI Recommendation</h4>
-</div>
-<p id="recommendationText" class="text-indigo-800 text-sm leading-relaxed">
-                    This customer is a prime candidate for the term deposit offer. <strong>Prioritize immediate contact</strong> through their preferred channel (Cellular) to maximize conversion rates and campaign efficiency.
+                  </div>
+                </div>
+
+                <div class="space-y-4"></div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                  <span class="text-sm font-medium text-slate-700">Housing Loan?</span>
+                  <div class="flex items-center gap-2">
+                    <label class="inline-flex items-center cursor-pointer">
+                      <input
+                        id="housingYes"
+                        class="form-radio text-primary focus:ring-accent border-slate-300"
+                        name="housing"
+                        type="radio"
+                        value="yes"
+                        checked
+                      />
+                      <span class="ml-2 text-sm text-slate-600">Yes</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer ml-3">
+                      <input
+                        id="housingNo"
+                        class="form-radio text-primary focus:ring-accent border-slate-300"
+                        name="housing"
+                        type="radio"
+                        value="no"
+                      />
+                      <span class="ml-2 text-sm text-slate-600">No</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                  <span class="text-sm font-medium text-slate-700">Personal Loan?</span>
+                  <div class="flex items-center gap-2">
+                    <label class="inline-flex items-center cursor-pointer">
+                      <input
+                        id="loanYes"
+                        class="form-radio text-primary focus:ring-accent border-slate-300"
+                        name="loan"
+                        type="radio"
+                        value="yes"
+                      />
+                      <span class="ml-2 text-sm text-slate-600">Yes</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer ml-3">
+                      <input
+                        id="loanNo"
+                        class="form-radio text-primary focus:ring-accent border-slate-300"
+                        name="loan"
+                        type="radio"
+                        value="no"
+                        checked
+                      />
+                      <span class="ml-2 text-sm text-slate-600">No</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Marketing Campaign Data -->
+            <div class="bg-white rounded-xl shadow-card p-6 border border-slate-100">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                <div class="p-2 bg-blue-50 text-primary rounded-lg">
+                  <span class="material-symbols-outlined text-[20px]">campaign</span>
+                </div>
+                <h3 class="text-lg font-bold text-primary">Marketing Campaign Data</h3>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-5">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Contact Type</label
+                    >
+                    <select
+                      id="contact"
+                      class="form-select w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      required
+                    >
+                      <option value="cellular">Cellular</option>
+                      <option value="telephone">Telephone</option>
+                      <option value="unknown">Unknown</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Last Contact Duration (sec)</label
+                    >
+                    <input
+                      id="duration"
+                      class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      placeholder="0"
+                      type="number"
+                      value="100"
+                      min="0"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-5">
+                  <div class="flex gap-2">
+                    <div class="w-1/2">
+                      <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                        >Month</label
+                      >
+                      <select
+                        id="month"
+                        class="form-select w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                        required
+                      >
+                        <option value="jan">Jan</option>
+                        <option value="feb">Feb</option>
+                        <option value="mar">Mar</option>
+                        <option value="apr">Apr</option>
+                        <option value="may">May</option>
+                        <option value="jun">Jun</option>
+                        <option value="jul">Jul</option>
+                        <option value="aug">Aug</option>
+                        <option value="sep">Sep</option>
+                        <option value="oct">Oct</option>
+                        <option value="nov">Nov</option>
+                        <option value="dec">Dec</option>
+                      </select>
+                    </div>
+
+                    <div class="w-1/2">
+                      <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                        >Day</label
+                      >
+                      <input
+                        id="day"
+                        class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                        placeholder="1-31"
+                        type="number"
+                        value="15"
+                        min="1"
+                        max="31"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Number of Contacts</label
+                    >
+                    <input
+                      id="campaign"
+                      class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      placeholder="Current campaign"
+                      type="number"
+                      value="1"
+                      min="1"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-5">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Days Passed</label
+                    >
+                    <input
+                      id="pdays"
+                      class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      placeholder="-1 if never"
+                      type="number"
+                      value="-1"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Prev. Outcome</label
+                    >
+                    <select
+                      id="poutcome"
+                      class="form-select w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      required
+                    >
+                      <option value="unknown">Unknown</option>
+                      <option value="failure">Failure</option>
+                      <option value="success">Success</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Previous Contacts</label
+                    >
+                    <input
+                      id="previous"
+                      class="form-input w-full rounded-lg border-slate-200 text-sm focus:border-accent focus:ring-0"
+                      placeholder="0"
+                      type="number"
+                      value="0"
+                      min="0"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-4">
+              <div class="flex gap-3 w-full md:w-auto">
+                <button
+                  type="reset"
+                  class="flex-1 md:flex-none px-4 py-2.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors"
+                >
+                  Reset Form
+                </button>
+                <button
+                  type="button"
+                  class="flex-1 md:flex-none px-4 py-2.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors"
+                >
+                  Load Sample
+                </button>
+              </div>
+
+              <div class="flex gap-3 w-full md:w-auto">
+                <button
+                  type="button"
+                  class="flex-1 md:flex-none px-4 py-2.5 rounded-lg border border-primary text-primary text-sm font-medium hover:bg-slate-50 transition-colors"
+                >
+                  Save Prediction
+                </button>
+                <button
+                  type="submit"
+                  class="flex-1 md:flex-none bg-primary hover:bg-secondary text-white px-8 py-2.5 rounded-lg shadow-lg shadow-primary/25 text-sm font-semibold transition-all transform active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span class="material-symbols-outlined text-[18px]">psychology</span>
+                  Predict Deposit Subscription
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right column -->
+        <div class="lg:col-span-4 space-y-6">
+          <div
+            id="resultPanel"
+            class="bg-white rounded-xl shadow-card border border-slate-100 overflow-hidden h-full flex flex-col hidden"
+          >
+            <div class="p-6 bg-gradient-to-br from-primary to-secondary text-center relative overflow-hidden">
+              <div
+                class="absolute inset-0 opacity-10"
+                style="
+                  background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0);
+                  background-size: 20px 20px;
+                "
+              ></div>
+
+              <h2 class="text-white text-lg font-semibold relative z-10 mb-6">Prediction Result</h2>
+
+              <div
+                class="mx-auto size-24 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm mb-4 border border-white/20 relative z-10"
+              >
+                <span id="resultIcon" class="material-symbols-outlined text-accent text-[48px]"
+                  >check_circle</span
+                >
+              </div>
+
+              <div class="relative z-10">
+                <p id="resultStatus" class="text-accent font-bold text-sm tracking-widest uppercase mb-1">
+                  High Probability
                 </p>
-</div>
-</div>
-</div>
-</main>
-<footer class="mt-auto border-t border-slate-200 bg-white py-6">
-<div class="max-w-7xl mx-auto px-4 text-center">
-<p class="text-xs text-slate-400">© 2025 SecureBank Analytics. Confidential internal tool.</p>
-</div>
-</footer>
-<script>
-  const form = document.getElementById("predictionForm");
-  const resultPanel = document.getElementById("resultPanel");
+                <h3 id="resultTitle" class="text-3xl font-bold text-white mb-2">Likely to Subscribe</h3>
+                <p id="resultDesc" class="text-blue-200 text-sm px-4">
+                  Based on current financial and demographic patterns.
+                </p>
+              </div>
+            </div>
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
+            <div class="p-6 flex-1 flex flex-col justify-center">
+              <div class="flex items-end justify-between mb-2">
+                <span class="text-sm font-medium text-slate-500">Confidence Score</span>
+                <span id="confidenceScore" class="text-2xl font-bold text-primary">85%</span>
+              </div>
 
-    const formData = {
-      age: Number(document.getElementById("age").value),
-      job: document.getElementById("job").value,
-      marital: document.getElementById("marital").value,
-      education: document.getElementById("education").value,
-      default: document.querySelector('input[name="default"]:checked').value,
-      balance: Number(document.getElementById("balance").value),
-      housing: document.querySelector('input[name="housing"]:checked').value,
-      loan: document.querySelector('input[name="loan"]:checked').value,
-      contact: document.getElementById("contact").value,
-      day: Number(document.getElementById("day").value),
-      month: document.getElementById("month").value,
-      duration: Number(document.getElementById("duration").value),
-      campaign: Number(document.getElementById("campaign").value),
-      pdays: Number(document.getElementById("pdays").value),
-      previous: Number(document.getElementById("previous").value),
-      poutcome: document.getElementById("poutcome").value
-    };
+              <div class="w-full bg-slate-100 rounded-full h-2.5 mb-6 overflow-hidden">
+                <div id="confidenceBar" class="bg-accent h-2.5 rounded-full" style="width: 85%"></div>
+              </div>
 
-    try {
-      const res = await fetch("http://127.0.0.1:8000/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+              <div id="reasonsList" class="space-y-4">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-success text-[20px] mt-0.5">trending_up</span>
+                  <div>
+                    <p class="text-sm font-medium text-slate-800">Strong Financial Health</p>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                      High yearly balance indicates potential for investment.
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-success text-[20px] mt-0.5">history</span>
+                  <div>
+                    <p class="text-sm font-medium text-slate-800">Positive History</p>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                      Previous campaign success increases likelihood.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="recommendationPanel" class="bg-indigo-50 rounded-xl p-6 border border-indigo-100 shadow-sm">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="material-symbols-outlined text-indigo-600">lightbulb</span>
+              <h4 class="font-bold text-indigo-900 text-sm uppercase tracking-wide">AI Recommendation</h4>
+            </div>
+            <p id="recommendationText" class="text-indigo-800 text-sm leading-relaxed">
+              This customer is a prime candidate for the term deposit offer.
+              <strong>Prioritize immediate contact</strong> through their preferred channel (Cellular) to maximize
+              conversion rates and campaign efficiency.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="mt-auto border-t border-slate-200 bg-white py-6">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <p class="text-xs text-slate-400">© 2025 SecureBank Analytics. Confidential internal tool.</p>
+      </div>
+    </footer>
+
+    <script>
+      // ====== HISTORY STORAGE (FIXED) ======
+      const HISTORY_KEY = "prediction_history_v1";
+
+      function saveHistoryRecord(record) {
+        const list = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+        list.unshift(record); // newest first
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+      }
+
+      function fmtNowISO() {
+        return new Date().toISOString();
+      }
+
+      // ====== FORM SUBMIT ======
+      const form = document.getElementById("predictionForm");
+      const resultPanel = document.getElementById("resultPanel");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = {
+          age: Number(document.getElementById("age").value),
+          job: document.getElementById("job").value,
+          marital: document.getElementById("marital").value,
+          education: document.getElementById("education").value,
+          default: document.querySelector('input[name="default"]:checked').value,
+          balance: Number(document.getElementById("balance").value),
+          housing: document.querySelector('input[name="housing"]:checked').value,
+          loan: document.querySelector('input[name="loan"]:checked').value,
+          contact: document.getElementById("contact").value,
+          day: Number(document.getElementById("day").value),
+          month: document.getElementById("month").value,
+          duration: Number(document.getElementById("duration").value),
+          campaign: Number(document.getElementById("campaign").value),
+          pdays: Number(document.getElementById("pdays").value),
+          previous: Number(document.getElementById("previous").value),
+          poutcome: document.getElementById("poutcome").value,
+        };
+
+        try {
+          const res = await fetch("http://127.0.0.1:8000/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+
+          if (!res.ok) throw new Error("API error: " + res.status);
+          const data = await res.json();
+
+          const proba = data.proba ?? (data.pred === 1 ? 1 : 0);
+          const pct = Math.round(proba * 100);
+          const likely = data.pred === 1;
+
+          // ✅ SAVE REAL INPUT + REAL PREDICTION to history
+          saveHistoryRecord({
+            id: Date.now(),
+            createdAt: fmtNowISO(),
+            input: formData,
+            output: {
+              pred: likely ? 1 : 0,
+              proba: proba,
+              pct: pct,
+            },
+          });
+
+          // show panel
+          resultPanel.classList.remove("hidden");
+
+          // update % + bar
+          document.getElementById("confidenceScore").innerText = pct + "%";
+          document.getElementById("confidenceBar").style.width = pct + "%";
+
+          // update title/icon/status
+          document.getElementById("resultTitle").innerText = likely
+            ? "Likely to Subscribe"
+            : "Unlikely to Subscribe";
+          document.getElementById("resultIcon").innerText = likely ? "check_circle" : "error";
+
+          document.getElementById("resultStatus").innerText =
+            pct >= 75 ? "HIGH PROBABILITY" : pct >= 50 ? "MEDIUM PROBABILITY" : "LOW PROBABILITY";
+
+          // recommendation text
+          document.getElementById("recommendationText").innerHTML = likely
+            ? `This customer is a prime candidate for the term deposit offer. <strong>Prioritize immediate contact</strong> through their preferred channel (${formData.contact}) to maximize conversion rates and campaign efficiency.`
+            : `This customer is less likely to subscribe now. Consider <strong>nurturing</strong> with better timing, clearer benefits, and avoid over-contacting.`;
+        } catch (err) {
+          alert("Predict failed: " + err.message);
+          console.error(err);
+        }
       });
-
-      if (!res.ok) throw new Error("API error: " + res.status);
-      const data = await res.json();
-
-      const proba = (data.proba ?? (data.pred === 1 ? 1 : 0));
-      const pct = Math.round(proba * 100);
-      const likely = data.pred === 1;
-
-      // show panel
-      resultPanel.classList.remove("hidden");
-
-      // update % + bar
-      document.getElementById("confidenceScore").innerText = pct + "%";
-      document.getElementById("confidenceBar").style.width = pct + "%";
-
-      // update title/icon/status
-      document.getElementById("resultTitle").innerText = likely ? "Likely to Subscribe" : "Unlikely to Subscribe";
-      document.getElementById("resultIcon").innerText = likely ? "check_circle" : "error";
-
-      document.getElementById("resultStatus").innerText =
-        pct >= 75 ? "HIGH PROBABILITY" : (pct >= 50 ? "MEDIUM PROBABILITY" : "LOW PROBABILITY");
-
-      // recommendation text
-      document.getElementById("recommendationText").innerHTML = likely
-        ? `This customer is a prime candidate for the term deposit offer. <strong>Prioritize immediate contact</strong> through their preferred channel (${formData.contact}) to maximize conversion rates and campaign efficiency.`
-        : `This customer is less likely to subscribe now. Consider <strong>nurturing</strong> with better timing, clearer benefits, and avoid over-contacting.`;
-
-    } catch (err) {
-      alert("Predict failed: " + err.message);
-      console.error(err);
-    }
-  });
-</script>
-</body></html>
+    </script>
+  </body>
+</html>
