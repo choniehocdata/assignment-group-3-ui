@@ -669,8 +669,9 @@
     </footer>
 
     <script>
-      // ====== HISTORY STORAGE (FIXED) ======
+      // ====== STORAGE KEYS ======
       const HISTORY_KEY = "prediction_history_v1";
+      const SELECTED_KEY = "prediction_history_selected_v1";
 
       function saveHistoryRecord(record) {
         const list = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
@@ -682,10 +683,93 @@
         return new Date().toISOString();
       }
 
-      // ====== FORM SUBMIT ======
+      // ====== UI HELPERS ======
       const form = document.getElementById("predictionForm");
       const resultPanel = document.getElementById("resultPanel");
 
+      function showResultUI({ pct, likely, contact }) {
+        resultPanel.classList.remove("hidden");
+        document.getElementById("confidenceScore").innerText = pct + "%";
+        document.getElementById("confidenceBar").style.width = pct + "%";
+        document.getElementById("resultTitle").innerText = likely
+          ? "Likely to Subscribe"
+          : "Unlikely to Subscribe";
+        document.getElementById("resultIcon").innerText = likely ? "check_circle" : "error";
+        document.getElementById("resultStatus").innerText =
+          pct >= 75 ? "HIGH PROBABILITY" : pct >= 50 ? "MEDIUM PROBABILITY" : "LOW PROBABILITY";
+
+        document.getElementById("recommendationText").innerHTML = likely
+          ? `This customer is a prime candidate for the term deposit offer. <strong>Prioritize immediate contact</strong> through their preferred channel (${contact}) to maximize conversion rates and campaign efficiency.`
+          : `This customer is less likely to subscribe now. Consider <strong>nurturing</strong> with better timing, clearer benefits, and avoid over-contacting.`;
+
+        // Scroll to result if coming from history or hash
+        setTimeout(() => {
+          resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 50);
+      }
+
+      function fillFormFromInput(input) {
+        if (!input) return;
+        const setVal = (id, v) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.value = v ?? el.value;
+        };
+
+        setVal("age", input.age);
+        setVal("job", input.job);
+        setVal("marital", input.marital);
+        setVal("education", input.education);
+        setVal("balance", input.balance);
+        setVal("contact", input.contact);
+        setVal("day", input.day);
+        setVal("month", input.month);
+        setVal("duration", input.duration);
+        setVal("campaign", input.campaign);
+        setVal("pdays", input.pdays);
+        setVal("previous", input.previous);
+        setVal("poutcome", input.poutcome);
+
+        // radios
+        const setRadio = (name, value) => {
+          const el = document.querySelector(`input[name="${name}"][value="${value}"]`);
+          if (el) el.checked = true;
+        };
+        setRadio("default", input.default);
+        setRadio("housing", input.housing);
+        setRadio("loan", input.loan);
+      }
+
+      // ====== AUTO LOAD RESULT FROM HISTORY CLICK ======
+      (function bootFromSelectedRecord() {
+        // only do when navigating from history (we use #result there)
+        if (!window.location.hash || window.location.hash !== "#result") return;
+
+        const raw = localStorage.getItem(SELECTED_KEY);
+        if (!raw) return;
+
+        let record;
+        try {
+          record = JSON.parse(raw);
+        } catch (_) {
+          return;
+        }
+
+        // (optional) fill form again for that record
+        if (record?.input) fillFormFromInput(record.input);
+
+        // show the same result on panel
+        const pct = Number(record?.output?.pct ?? 0);
+        const likely = Number(record?.output?.pred ?? 0) === 1;
+        const contact = record?.input?.contact ?? "cellular";
+
+        showResultUI({ pct, likely, contact });
+
+        // optional: clear selection after use so it won't keep overriding
+        // localStorage.removeItem(SELECTED_KEY);
+      })();
+
+      // ====== FORM SUBMIT ======
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -723,7 +807,7 @@
           const likely = data.pred === 1;
 
           // ✅ SAVE REAL INPUT + REAL PREDICTION to history
-          saveHistoryRecord({
+          const record = {
             id: Date.now(),
             createdAt: fmtNowISO(),
             input: formData,
@@ -732,30 +816,13 @@
               proba: proba,
               pct: pct,
             },
-          });
+          };
+          saveHistoryRecord(record);
 
-          // show panel
-          resultPanel.classList.remove("hidden");
-
-          // update % + bar
-          document.getElementById("confidenceScore").innerText = pct + "%";
-          document.getElementById("confidenceBar").style.width = pct + "%";
-
-          // update title/icon/status
-          document.getElementById("resultTitle").innerText = likely
-            ? "Likely to Subscribe"
-            : "Unlikely to Subscribe";
-          document.getElementById("resultIcon").innerText = likely ? "check_circle" : "error";
-
-          document.getElementById("resultStatus").innerText =
-            pct >= 75 ? "HIGH PROBABILITY" : pct >= 50 ? "MEDIUM PROBABILITY" : "LOW PROBABILITY";
-
-          // recommendation text
-          document.getElementById("recommendationText").innerHTML = likely
-            ? `This customer is a prime candidate for the term deposit offer. <strong>Prioritize immediate contact</strong> through their preferred channel (${formData.contact}) to maximize conversion rates and campaign efficiency.`
-            : `This customer is less likely to subscribe now. Consider <strong>nurturing</strong> with better timing, clearer benefits, and avoid over-contacting.`;
+          // update result UI
+          showResultUI({ pct, likely, contact: formData.contact });
         } catch (err) {
-          alert("Predict failed: " + err.message);
+          alert("Predict failed: " + (err?.message || err));
           console.error(err);
         }
       });

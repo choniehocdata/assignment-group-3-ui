@@ -28,6 +28,12 @@
       }
     };
   </script>
+
+  <style>
+    /* clickable row */
+    .row-clickable { cursor: pointer; }
+    .row-clickable:hover { background: rgba(10, 37, 64, 0.04); }
+  </style>
 </head>
 
 <body class="bg-background text-slate-800 font-display min-h-screen flex flex-col">
@@ -41,13 +47,13 @@
     </div>
 
     <div class="flex gap-3">
-      <button onclick="exportCSV()"
+      <button id="btnExport"
         class="flex items-center gap-1 px-4 py-2 rounded-lg border border-slate-300 text-sm hover:bg-slate-50">
         <span class="material-symbols-outlined text-sm">download</span>
         Export CSV
       </button>
 
-      <button onclick="clearHistory()"
+      <button id="btnClear"
         class="flex items-center gap-1 px-4 py-2 rounded-lg border border-red-300 text-red-600 text-sm hover:bg-red-50">
         <span class="material-symbols-outlined text-sm">delete</span>
         Clear
@@ -98,38 +104,52 @@
 </footer>
 
 <script>
+  // ====== KEYS ======
   const HISTORY_KEY = "prediction_history_v1";
+  const SELECTED_KEY = "prediction_history_selected_v1";
+
+  // ====== ELEMENTS ======
   const tableBody = document.getElementById("historyTable");
   const emptyState = document.getElementById("emptyState");
+  const btnClear = document.getElementById("btnClear");
+  const btnExport = document.getElementById("btnExport");
 
-  const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  // ====== LOAD HISTORY ======
+  function getHistoryList() {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  }
 
   function formatDate(iso) {
     const d = new Date(iso);
     return d.toLocaleString();
   }
 
+  // ====== RENDER ======
   function renderHistory() {
+    const history = getHistoryList();
     tableBody.innerHTML = "";
 
     if (history.length === 0) {
       emptyState.classList.remove("hidden");
       return;
     }
-
     emptyState.classList.add("hidden");
 
     history.forEach((item, index) => {
       const tr = document.createElement("tr");
-      const yes = item.output.pred === 1;
+      const yes = item?.output?.pred === 1;
+
+      // IMPORTANT: set data-id để click row biết record nào
+      tr.className = "row-clickable";
+      tr.dataset.id = item.id; // item.id đã có từ saveHistoryRecord ở dashboard
 
       tr.innerHTML = `
         <td class="p-4 font-semibold">${index + 1}</td>
-        <td class="p-4">${item.input.age}</td>
-        <td class="p-4 capitalize">${item.input.job}</td>
-        <td class="p-4 capitalize">${item.input.marital}</td>
-        <td class="p-4 text-right font-mono">${item.input.balance.toLocaleString()}</td>
-        <td class="p-4 text-slate-500">${formatDate(item.createdAt)}</td>
+        <td class="p-4">${item?.input?.age ?? ""}</td>
+        <td class="p-4 capitalize">${item?.input?.job ?? ""}</td>
+        <td class="p-4 capitalize">${item?.input?.marital ?? ""}</td>
+        <td class="p-4 text-right font-mono">${Number(item?.input?.balance ?? 0).toLocaleString()}</td>
+        <td class="p-4 text-slate-500">${formatDate(item?.createdAt ?? "")}</td>
         <td class="p-4">
           <span class="px-2 py-1 rounded-full text-xs font-semibold ${
             yes ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
@@ -137,35 +157,49 @@
             ${yes ? "Yes" : "No"}
           </span>
         </td>
-        <td class="p-4 text-right font-semibold">${item.output.pct}%</td>
+        <td class="p-4 text-right font-semibold">${item?.output?.pct ?? 0}%</td>
       `;
 
       tableBody.appendChild(tr);
     });
   }
 
-  function clearHistory() {
+  // ====== CLICK ROW -> GO DASHBOARD WITH SELECTED ======
+  tableBody.addEventListener("click", (e) => {
+    const tr = e.target.closest("tr[data-id]");
+    if (!tr) return;
+
+    const id = Number(tr.dataset.id);
+    const list = getHistoryList();
+    const record = list.find(x => Number(x.id) === id);
+    if (!record) return;
+
+    localStorage.setItem(SELECTED_KEY, JSON.stringify(record));
+    window.location.href = "dashboard.html#result";
+  });
+
+  // ====== CLEAR ======
+  btnClear.addEventListener("click", () => {
     if (!confirm("Clear all prediction history?")) return;
     localStorage.removeItem(HISTORY_KEY);
-    location.reload();
-  }
+    renderHistory();
+  });
 
-  function exportCSV() {
+  // ====== EXPORT CSV ======
+  btnExport.addEventListener("click", () => {
+    const history = getHistoryList();
     if (history.length === 0) return;
 
-    const header = [
-      "No","Age","Job","Marital","Balance","Date","Result","Confidence"
-    ];
-
+    const header = ["No","Age","Job","Marital","Balance","Date","Result","Confidence"];
     const rows = history.map((item, i) => [
       i + 1,
-      item.input.age,
-      item.input.job,
-      item.input.marital,
-      item.input.balance,
-      item.createdAt,
-      item.output.pred === 1 ? "Yes" : "No",
-      item.output.pct + "%"
+      item?.input?.age ?? "",
+      item?.input?.job ?? "",
+      item?.input?.marital ?? "",
+      item?.input?.balance ?? "",
+      item?.createdAt ?? "",
+      item?.output?.pred === 1 ? "Yes" : "No",
+      (item?.output?.pct ?? 0) + "%"
     ]);
 
     let csv = header.join(",") + "\n";
@@ -176,8 +210,9 @@
     a.href = URL.createObjectURL(blob);
     a.download = "prediction_history.csv";
     a.click();
-  }
+  });
 
+  // ====== INIT ======
   renderHistory();
 </script>
 
